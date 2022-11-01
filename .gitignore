@@ -3,3 +3,4 @@ venv/
 build/
 dist/
 buildozer/build
+./run.sh
