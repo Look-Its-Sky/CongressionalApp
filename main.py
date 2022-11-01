@@ -3,6 +3,23 @@ import requests
 from kivymd.app import MDApp
 from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 
+
+def getTimeSlots(year: str, month: str, day: str):
+    URL = 'http://129.146.242.239:8080/timeslots?' + 'year=' + year + '&month=' + month + '&day=' + day
+    r = requests.get(url=URL, params={
+        'month': month,
+        'day': day
+    })
+
+def addTimeSlot(year: str, month: str, day: str, hour: str, minute: str):
+    URL = 'http://129.146.242.239:8080/book?' + 'year=' + year + '&month=' + month + '&day=' + day + '&hour=' + hour + '&minute=' + minute
+    r = requests.post(url=URL, params={
+        'year': year,
+        'month': month,
+        'day': day,
+        'hour': hour,
+        'minute': minute
+    })
 KV = '''
 MDFloatLayout:
     MDRaisedButton:
@@ -24,7 +41,7 @@ MDFloatLayout:
     MDRaisedButton:
         text: "List available time slots for chosen month"
         pos_hint: {'center_x': .5, 'center_y': 0.2}
-        on_release: app.thishastobedone()
+        on_release: app.getDaysAvaliableDays(month1,year1)
     MDRaisedButton:
         text: "Book Appointment"
         pos_hint: {'center_x': .5, 'center_y': 0.1}
@@ -33,6 +50,11 @@ MDFloatLayout:
 
 
 class Test(MDApp):
+    def getDaysAvaliableDays(month: str, year: str):
+        URL = 'http://129.146.242.239:8080/days?' + 'year=' + year + '&month' + month
+        r = requests.get(url=URL, params={'month': month})
+        return r
+
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Orange"
@@ -73,8 +95,6 @@ class Test(MDApp):
         print(month1)
         print(day1)
 
-    def thishastobedone():
-        getDaysAvaliableDays(month1,year1)
     def on_cancel(self, instance, value):
         '''Events called when the "CANCEL" dialog box button is clicked.'''
 
@@ -82,26 +102,6 @@ class Test(MDApp):
         date_dialog = MDDatePicker()
         date_dialog.bind(on_save=self.on_save, on_cancel=self.on_cancel)
         date_dialog.open()
-def getDaysAvaliableDays(month: str, year: str):
-    URL = 'http://129.146.242.239:8080/days?' + 'year=' + year + '&month' + month
-    r = requests.get(url=URL, params={'month': month})
 
-    return r
 
-def getTimeSlots(year: str, month: str, day: str):
-    URL = 'http://129.146.242.239:8080/timeslots?' + 'year=' + year + '&month=' + month + '&day=' + day
-    r = requests.get(url=URL, params={
-        'month': month,
-        'day': day
-    })
-
-def addTimeSlot(year: str, month: str, day: str, hour: str, minute: str):
-    URL = 'http://129.146.242.239:8080/book?' + 'year=' + year + '&month=' + month + '&day=' + day + '&hour=' + hour + '&minute=' + minute
-    r = requests.post(url=URL, params={
-        'year': year,
-        'month': month,
-        'day': day,
-        'hour': hour,
-        'minute': minute
-    })
 Test().run()
